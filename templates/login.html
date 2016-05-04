@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Tornado Chat Demo</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    </head>
+    <body>
+        <form name="connection" action="login" method="post">
+            {% module xsrf_form_html() %}
+            <input required name="username" type="text" placeholder="Username">
+            <input required name="password" type="password" placeholder="Password">
+            <button type="submit"> Sign in </button>
+        </form>
+    </body>
+</html>
