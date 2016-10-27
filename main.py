@@ -52,7 +52,7 @@ class LoginHandler(BaseHandler):
     def get(self):
         """Get login form
         """
-        incorrect = self.get_secure_cookie('incorrect')
+        incorrect = self.redis_client.get(self.request.remote_ip)
         if incorrect and int(incorrect) > 5:
             logging.warning('an user have been blocked')
             self.write('<center>blocked</center>')
@@ -64,16 +64,15 @@ class LoginHandler(BaseHandler):
         """
         getusername = tornado.escape.xhtml_escape(self.get_argument('username'))
         getpassword = tornado.escape.xhtml_escape(self.get_argument('password'))
-        if getpassword == bytes.decode(self.redis_client.get('users-' + getusername)):
+        password = self.redis_client.get('users-' + getusername)
+        if password and getpassword == bytes.decode(password):
             self.set_secure_cookie("user", getusername, expires_days=1)
-            self.set_secure_cookie("incorrect", "0")
+            self.redis_client.delete(self.request.remote_ip)
             self.redirect('/')
         else:
             logging.info('invalid credentials')
-            incorrect = self.get_secure_cookie('incorrect')
-            if not incorrect:
-                incorrect = 0
-            self.set_secure_cookie('incorrect', str(int(incorrect) + 1), expires_days=1)
+            incorrect = self.redis_client.get(self.request.remote_ip)
+            self.redis_client.setex(self.request.remote_ip,(int(incorrect) + 1 if incorrect else 1), 3600*24)
             self.render('login.html', user=self.current_user)
 
 
