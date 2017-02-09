@@ -2,18 +2,15 @@
 # -*- coding: utf-8 -*-
 
 import logging
-import tornado.escape
-import tornado.ioloop
-import tornado.web
-import tornado.websocket
 import string
 import random
 import uuid
 import json
 import redis
+from  tornado import escape, ioloop, web, websocket
 
 
-class Application(tornado.web.Application):
+class Application(web.Application):
 
     def __init__(self, redis_client: redis.Redis):
         handlers = [
@@ -32,26 +29,25 @@ class Application(tornado.web.Application):
         super(Application, self).__init__(handlers, **settings)
 
 
-class BaseHandler(tornado.web.RequestHandler):
-    """Superclass for Handlers which require a connected user
-    """
+class BaseHandler(web.RequestHandler):
+    """Superclass for Handlers which require a connected user"""
+
     def get_current_user(self):
         """Get current connected user
 
         :return: current connected user
         """
-        return self.get_secure_cookie("user")
+        return self.get_secure_cookie('user')
 
 
 class LoginHandler(BaseHandler):
-    """Handle user login actions
-    """
+
+    """Handle user login actions"""
     def initialize(self, redis_client: redis.Redis):
         self.redis_client = redis_client
 
     def get(self):
-        """Get login form
-        """
+        """Get login form"""
         incorrect = self.redis_client.get(self.request.remote_ip)
         if incorrect and int(incorrect) > 5:
             logging.warning('an user have been blocked')
@@ -60,13 +56,12 @@ class LoginHandler(BaseHandler):
         self.render('login.html', user=self.current_user)
 
     def post(self):
-        """Post connection form and try to connect with these credentials
-        """
-        getusername = tornado.escape.xhtml_escape(self.get_argument('username'))
-        getpassword = tornado.escape.xhtml_escape(self.get_argument('password'))
+        """Post connection form and try to connect with these credentials"""
+        getusername = escape.xhtml_escape(self.get_argument('username'))
+        getpassword = escape.xhtml_escape(self.get_argument('password'))
         password = self.redis_client.get('users-' + getusername)
         if password and getpassword == bytes.decode(password):
-            self.set_secure_cookie("user", getusername, expires_days=1)
+            self.set_secure_cookie('user', getusername, expires_days=1)
             self.redis_client.delete(self.request.remote_ip)
             self.redirect('/')
         else:
@@ -77,23 +72,22 @@ class LoginHandler(BaseHandler):
 
 
 class LogoutHandler(BaseHandler):
-    """Handle user logout action
-    """
+    """Handle user logout action"""
+
     def get(self):
-        """Disconnect an user, delete his cookie and redirect him
-        """
+        """Disconnect an user, delete his cookie and redirect him"""
         self.clear_cookie('user')
         self.redirect('/')
 
 
 class MainHandler(BaseHandler):
 
-    @tornado.web.authenticated
+    @web.authenticated
     def get(self):
         self.render('index.html', messages=[])
 
 
-class ChatSocketHandler(tornado.websocket.WebSocketHandler, BaseHandler):
+class ChatSocketHandler(websocket.WebSocketHandler, BaseHandler):
 
     def initialize(self, redis_client: redis.Redis):
         self.redis_client = redis_client
@@ -101,9 +95,9 @@ class ChatSocketHandler(tornado.websocket.WebSocketHandler, BaseHandler):
         self.thread = None
 
     def get_compression_options(self):
-        return {}  # Non-None enables compression with default options.
+        return {}  # Non "None" enables compression with default options.
 
-    @tornado.web.authenticated
+    @web.authenticated
     def open(self, path_request):
         self.channel = 'messages' + path_request
         self.subscrib.subscribe(**{self.channel: self.send_updates})
@@ -116,27 +110,26 @@ class ChatSocketHandler(tornado.websocket.WebSocketHandler, BaseHandler):
     def send_updates(self, chat):
         try:
             self.write_message(chat['data'])
-        except tornado.websocket.WebSocketClosedError:
-            logging.error("Error sending message", exc_info=True)
+        except websocket.WebSocketClosedError:
+            logging.error('Error sending message', exc_info=True)
 
     def on_message(self, message):
-        logging.info("got message %r", message)
-        parsed = tornado.escape.json_decode(message)
+        logging.info('got message %r', message)
+        parsed = escape.json_decode(message)
         chat = {
-                'id': str(uuid.uuid4()),
-                'body': parsed['body'],
-            }
-        chat['html'] = tornado.escape.to_basestring(self.render_string('message.html', message=chat))
+            'id': str(uuid.uuid4()),
+            'body': parsed['body'],
+        }
+        chat['html'] = escape.to_basestring(self.render_string('message.html', message=chat))
         self.redis_client.publish(self.channel, json.dumps(chat))
 
 
 def main():
     tchat_port = '8888'
     redis_client = redis.Redis(host='localhost', port=6379, db=0)
-    #
     app = Application(redis_client=redis_client)
     app.listen(port=tchat_port)
-    tornado.ioloop.IOLoop.current().start()
+    ioloop.IOLoop.current().start()
 
 
 if __name__ == '__main__':
