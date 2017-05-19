@@ -5,7 +5,7 @@ import json
 import logging
 from redis import Redis
 from tornado import escape, websocket, web
-from  Handlers.BaseHandler import BaseHandler
+from Handlers.BaseHandler import BaseHandler
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +15,6 @@ class ChatSocketHandler(websocket.WebSocketHandler, BaseHandler):
     def initialize(self, redis_client: Redis):
         self.redis_client = redis_client
         self.subscrib = redis_client.pubsub()
-        self.thread = None
 
     def get_compression_options(self):
         return {}  # Non "None" enables compression with default options.
@@ -41,8 +40,8 @@ class ChatSocketHandler(websocket.WebSocketHandler, BaseHandler):
         parsed = escape.json_decode(message)
         chat = {
             'id': str(uuid.uuid4()),
+            'author': self.get_current_user().decode(),
             'body': parsed['body'],
         }
-        chat['html'] = escape.to_basestring(self.render_string('message.html',
-            message=chat))
+        chat['html'] = escape.to_basestring(self.render_string('message.html', message=chat))
         self.redis_client.publish(self.channel, json.dumps(chat))

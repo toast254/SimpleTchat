@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>Tornado Chat Demo</title>
+        <title>SimpleTchat</title>
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
         <link rel="stylesheet" href="{{ static_url('chat.css') }}" type="text/css">
     </head>
@@ -17,7 +17,9 @@
                 <form action="/a/message/new" method="post" id="messageform">
                     <table>
                         <tr>
-                            <td><input name="body" id="message" style="width:500px"></td>
+                            <td>
+                                <input name="body" id="message" style="width:500px">
+                            </td>
                             <td style="padding-left:5px">
                                 <input type="submit" value="{{ _('Post') }}">
                                 <input type="hidden" name="next" value="{{ request.path }}">

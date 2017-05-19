@@ -2,14 +2,13 @@
 
 import logging
 from tornado import web
-from  Handlers.BaseHandler import BaseHandler
+from Handlers.BaseHandler import BaseHandler
 
 logger = logging.getLogger(__name__)
 
 
 class MainHandler(BaseHandler):
-    """handle / endpoint.
-    """
+    """handle / endpoint"""
 
     @web.authenticated
     def get(self):

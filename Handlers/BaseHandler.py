@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
 import logging
-from  tornado import web
+from tornado.web import RequestHandler
 
 logger = logging.getLogger(__name__)
 
 
-class BaseHandler(web.RequestHandler):
+class BaseHandler(RequestHandler):
     """Superclass for Handlers which require a connected user"""
 
     def get_current_user(self):

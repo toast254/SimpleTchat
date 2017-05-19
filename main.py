@@ -2,15 +2,15 @@
 # -*- coding: utf-8 -*-
 
 import uuid
-import json
-from redis import Redis
 import logging
-from Handlers.BaseHandler import BaseHandler
+from redis import Redis
+from tornado import ioloop, web
 from Handlers.MainHandler import MainHandler
 from Handlers.LoginHandler import LoginHandler
 from Handlers.LogoutHandler import LogoutHandler
 from Handlers.ChatSocketHandler import ChatSocketHandler
-from  tornado import escape, ioloop, web, websocket
+
+logging.basicConfig(format='%(asctime)s [%(levelname)s] %(message)s', filename='simpletchat.log',level=logging.INFO)
 
 
 class Application(web.Application):

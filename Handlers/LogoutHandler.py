@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import logging
-from  Handlers.BaseHandler import BaseHandler
+from Handlers.BaseHandler import BaseHandler
 
 logger = logging.getLogger(__name__)
 
