@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import logging
-import string
-import random
 import uuid
 import json
 import redis
+import logging
 from  tornado import escape, ioloop, web, websocket
 
 
@@ -20,7 +18,7 @@ class Application(web.Application):
             (r'/chatsocket/(.*)$', ChatSocketHandler, dict(redis_client=redis_client)),
         ]
         settings = {
-            'cookie_secret': ''.join([random.choice(string.printable) for _ in range(64)]),
+            'cookie_secret': ''.join([uuid.uuid4() for _ in range(8)]),
             'template_path': './templates',
             'static_path': './static',
             'login_url': '/login',
