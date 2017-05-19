@@ -3,22 +3,29 @@
 
 import uuid
 import json
-import redis
+from redis import Redis
 import logging
+from Handlers.BaseHandler import BaseHandler
+from Handlers.MainHandler import MainHandler
+from Handlers.LoginHandler import LoginHandler
+from Handlers.LogoutHandler import LogoutHandler
+from Handlers.ChatSocketHandler import ChatSocketHandler
 from  tornado import escape, ioloop, web, websocket
 
 
 class Application(web.Application):
 
-    def __init__(self, redis_client: redis.Redis):
+    def __init__(self, redis_client: Redis):
         handlers = [
             (r'/', MainHandler),
-            (r'/login', LoginHandler, dict(redis_client=redis_client)),
+            (r'/login', LoginHandler,
+                dict(redis_client=redis_client)),
             (r'/logout', LogoutHandler),
-            (r'/chatsocket/(.*)$', ChatSocketHandler, dict(redis_client=redis_client)),
+            (r'/chatsocket/(.*)$', ChatSocketHandler,
+                dict(redis_client=redis_client)),
         ]
         settings = {
-            'cookie_secret': ''.join([uuid.uuid4() for _ in range(8)]),
+            'cookie_secret': ''.join([str(uuid.uuid4()) for _ in range(8)]),
             'template_path': './templates',
             'static_path': './static',
             'login_url': '/login',
@@ -27,104 +34,9 @@ class Application(web.Application):
         super(Application, self).__init__(handlers, **settings)
 
 
-class BaseHandler(web.RequestHandler):
-    """Superclass for Handlers which require a connected user"""
-
-    def get_current_user(self):
-        """Get current connected user
-
-        :return: current connected user
-        """
-        return self.get_secure_cookie('user')
-
-
-class LoginHandler(BaseHandler):
-
-    """Handle user login actions"""
-    def initialize(self, redis_client: redis.Redis):
-        self.redis_client = redis_client
-
-    def get(self):
-        """Get login form"""
-        incorrect = self.redis_client.get(self.request.remote_ip)
-        if incorrect and int(incorrect) > 5:
-            logging.warning('an user have been blocked')
-            self.write('<center>blocked</center>')
-            return
-        self.render('login.html', user=self.current_user)
-
-    def post(self):
-        """Post connection form and try to connect with these credentials"""
-        getusername = escape.xhtml_escape(self.get_argument('username'))
-        getpassword = escape.xhtml_escape(self.get_argument('password'))
-        password = self.redis_client.get('users-' + getusername)
-        if password and getpassword == bytes.decode(password):
-            self.set_secure_cookie('user', getusername, expires_days=1)
-            self.redis_client.delete(self.request.remote_ip)
-            self.redirect('/')
-        else:
-            logging.info('invalid credentials')
-            incorrect = self.redis_client.get(self.request.remote_ip)
-            self.redis_client.setex(self.request.remote_ip,(int(incorrect) + 1 if incorrect else 1), 3600*24)
-            self.render('login.html', user=self.current_user)
-
-
-class LogoutHandler(BaseHandler):
-    """Handle user logout action"""
-
-    def get(self):
-        """Disconnect an user, delete his cookie and redirect him"""
-        self.clear_cookie('user')
-        self.redirect('/')
-
-
-class MainHandler(BaseHandler):
-
-    @web.authenticated
-    def get(self):
-        self.render('index.html', messages=[])
-
-
-class ChatSocketHandler(websocket.WebSocketHandler, BaseHandler):
-
-    def initialize(self, redis_client: redis.Redis):
-        self.redis_client = redis_client
-        self.subscrib = redis_client.pubsub()
-        self.thread = None
-
-    def get_compression_options(self):
-        return {}  # Non "None" enables compression with default options.
-
-    @web.authenticated
-    def open(self, path_request):
-        self.channel = 'messages' + path_request
-        self.subscrib.subscribe(**{self.channel: self.send_updates})
-        self.thread = self.subscrib.run_in_thread(sleep_time=0.001)
-
-    def on_close(self):
-        self.subscrib.unsubscribe(self.channel)
-        self.thread.stop()
-
-    def send_updates(self, chat):
-        try:
-            self.write_message(chat['data'])
-        except websocket.WebSocketClosedError:
-            logging.error('Error sending message', exc_info=True)
-
-    def on_message(self, message):
-        logging.info('got message %r', message)
-        parsed = escape.json_decode(message)
-        chat = {
-            'id': str(uuid.uuid4()),
-            'body': parsed['body'],
-        }
-        chat['html'] = escape.to_basestring(self.render_string('message.html', message=chat))
-        self.redis_client.publish(self.channel, json.dumps(chat))
-
-
 def main():
     tchat_port = '8888'
-    redis_client = redis.Redis(host='localhost', port=6379, db=0)
+    redis_client = Redis(host='localhost', port=6379, db=0)
     app = Application(redis_client=redis_client)
     app.listen(port=tchat_port)
     ioloop.IOLoop.current().start()
