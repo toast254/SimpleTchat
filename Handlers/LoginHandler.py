@@ -2,13 +2,12 @@
 
 import logging
 from tornado import escape
-from Tools import RedisClient
+from Tools import RedisClient, Configuration
 from Handlers.BaseHandler import BaseHandler
 
 logger = logging.getLogger(__name__)
 
-try_limit = 5  # 5 failed auth before block
-ban_time = 3600 * 24  # 1 day in seconds
+(_, try_limit, ban_time) = Configuration.load_security_conf()
 
 
 class LoginHandler(BaseHandler):
