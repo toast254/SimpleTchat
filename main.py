@@ -5,6 +5,7 @@ import uuid
 import logging
 from tornado import ioloop, web
 from Handlers.MainHandler import MainHandler
+from Handlers.RoomHandler import RoomHandler
 from Handlers.LoginHandler import LoginHandler
 from Handlers.LogoutHandler import LogoutHandler
 from Handlers.RegisterHandler import RegisterHandler
@@ -23,6 +24,7 @@ class Application(web.Application):
     def __init__(self):
         handlers = [
             (r'/', MainHandler),
+            (r'/room', RoomHandler),
             (r'/login', LoginHandler),
             (r'/logout', LogoutHandler),
             (r'/register', RegisterHandler),

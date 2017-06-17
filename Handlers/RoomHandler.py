@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
 
 import logging
+from tornado.web import authenticated
 from Handlers.BaseHandler import BaseHandler
 
 logger = logging.getLogger(__name__)
 
 
-class MainHandler(BaseHandler):
+class RoomHandler(BaseHandler):
     """handle / endpoint"""
 
+    @authenticated
     def get(self):
         """Serve Get and return main page"""
-        if self.is_connected():
-            self.redirect('/room')
-            return
-        self.render('index.html')
+        self.render('room.html')
