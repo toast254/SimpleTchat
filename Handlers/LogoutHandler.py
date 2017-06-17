@@ -11,5 +11,6 @@ class LogoutHandler(BaseHandler):
 
     def get(self):
         """Disconnect an user, delete his cookie and redirect him"""
+        logger.info('user connected : ' + self.get_current_user().decode())
         self.clear_cookie('user')
         self.redirect('/')

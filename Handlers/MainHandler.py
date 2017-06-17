@@ -1,16 +1,14 @@
 # -*- coding: utf-8 -*-
 
 import logging
-from tornado import web
-from Handlers.BaseHandler import BaseHandler
+from tornado.web import RequestHandler
 
 logger = logging.getLogger(__name__)
 
 
-class MainHandler(BaseHandler):
+class MainHandler(RequestHandler):
     """handle / endpoint"""
 
-    @web.authenticated
     def get(self):
         """Serve Get and return main page"""
-        self.render('index.html', messages=[])
+        self.render('index.html')

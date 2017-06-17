@@ -28,4 +28,4 @@ Execute **main.py** in its directory, you have now a running server !
 
 ### Enjoy !
 
-Go to http://127.0.0.1:8888 with your favorite web browser
+Go to http://127.0.0.1:8080 with your favorite web browser
