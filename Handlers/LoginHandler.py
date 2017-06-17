@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import logging
-from redis import Redis
 from tornado import escape
+from Tools import RedisClient
 from Handlers.BaseHandler import BaseHandler
 
 logger = logging.getLogger(__name__)
@@ -14,13 +14,9 @@ ban_time = 3600 * 24  # 1 day in seconds
 class LoginHandler(BaseHandler):
     """Handle user login actions"""
 
-    def initialize(self, redis_client: Redis):
-        """Init this handler, use the given redis client
-
-        :type redis_client: Redis
-        :param redis_client: a redis client instance
-        """
-        self.redis_client = redis_client
+    def initialize(self):
+        """Init this handler, init a redis connection"""
+        self.redis_client = RedisClient.get_redis_client()
 
     def is_blocked(self):
         """send 403 to a blocked ip"""
