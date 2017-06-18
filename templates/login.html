@@ -4,16 +4,102 @@
         <meta charset="UTF-8">
         <title>SimpleTchat</title>
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <!-- CSS -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.4.2/css/bulma.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     </head>
     <body>
-        <h2>Sign in</h2>
-        <form name="connection" action="login" method="post">
-            {% module xsrf_form_html() %}
-            <input required name="username" type="text" placeholder="Username">
-            <input required name="password" type="password" placeholder="Password">
-            <button type="submit">
-                Go
-            </button>
-        </form>
+        <section class="hero is-primary is-fullheight has-text-centered">
+            <!-- Hero head: stick at the top -->
+            <div class="hero-head">
+                <header class="nav">
+                    <div class="container">
+                        <div class="nav-left">
+                            <a class="nav-item is-active" href="/">
+                                <span class="icon">
+                                    <i class="fa fa-commenting"></i>
+                                </span>
+                                <span>SimpleTchat</span>
+                            </a>
+                        </div>
+                        <span id="menu_toggle" class="nav-toggle">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </span>
+                        <div id="menu_content" class="nav-right nav-menu">
+                            <span class="nav-item">
+                                <a class="button is-primary is-inverted" href="/register">
+                                    <span class="icon">
+                                        <i class="fa fa-user-plus"></i>
+                                    </span>
+                                    <span>Sign up</span>
+                                </a>
+                            </span>
+                            <span class="nav-item">
+                                <a class="button is-primary is-inverted" href="https://github.com/toast254/SimpleTchat">
+                                    <span class="icon">
+                                        <i class="fa fa-github"></i>
+                                    </span>
+                                    <span>Fork</span>
+                                </a>
+                            </span>
+                        </div>
+                    </div>
+                </header>
+            </div>
+            <!-- Hero content: will be in the middle -->
+            <div class="hero-body">
+                <div class="container has-text-centered">
+                    <h1 class="title is-spaced">
+                        Connect to your account
+                    </h1>
+                    <form name="connection" action="login" method="post">
+                        {% module xsrf_form_html() %}
+                        <div class="field has-addons has-addons-centered">
+                            <p class="control">
+                                <a class="button is-static">
+                                    <span class="icon is-small is-left">
+                                        <i class="fa fa-user"></i>
+                                    </span>
+                                </a>
+                            </p>
+                            <p class="control">
+                                <input class="input" required name="username" type="text" placeholder="Username">
+                            </p>
+                        </div>
+                        <div class="field has-addons has-addons-centered">
+                            <p class="control">
+                                <a class="button is-static">
+                                    <span class="icon is-small is-left">
+                                        <i class="fa fa-lock"></i>
+                                    </span>
+                                </a>
+                            </p>
+                            <p class="control">
+                                <input class="input" required name="password" type="password" placeholder="Password">
+                            </p>
+                        </div>
+                        <div class="field has-addons has-addons-centered">
+                            <p class="control">
+                                <a class="button is-primary is-inverted">
+                                    <span class="icon">
+                                        <i class="fa fa-sign-in"></i>
+                                    </span>
+                                    <span>Sign in</span>
+                                </a>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- Hero footer: will stick at the bottom -->
+            <div class="hero-foot has-text-centered">
+                <div class="container">
+                    <!-- nothing yet -->
+                </div>
+            </div>
+        </section>
+        <script type="text/javascript" src="{{ static_url('js/menu_toggle.js') }}"></script>
     </body>
 </html>
