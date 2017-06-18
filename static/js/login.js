@@ -1,0 +1,29 @@
+
+var submitButton = document.getElementById("submit_button");
+
+function onSuccess () {
+    console.log(this);
+    if (this.status == 200)
+        window.location.replace("/room");
+    else
+        onError();
+}
+
+function onError () {
+    submitButton.classList.remove("is-loading");
+    submitButton.removeAttribute("disabled");
+}
+
+function login(oFormElement) {
+    submitButton.classList.add("is-loading");
+    submitButton.setAttribute("disabled", "disabled");
+    //
+    var oReq = new XMLHttpRequest();
+    oReq.onload = onSuccess;
+    oReq.onerror = onError;
+    //oReq.upload.addEventListener("load", onSuccess);
+    //oReq.upload.addEventListener("error", onError);
+    //
+    oReq.open("post", oFormElement.action);
+    oReq.send(new FormData(oFormElement));
+}

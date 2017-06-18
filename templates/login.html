@@ -54,7 +54,7 @@
                     <h1 class="title is-spaced">
                         Connect to your account
                     </h1>
-                    <form name="connection" action="login" method="post">
+                    <form name="connection" action="login" method="post" onsubmit="login(this); return false;">
                         {% module xsrf_form_html() %}
                         <div class="field has-addons has-addons-centered">
                             <p class="control">
@@ -82,12 +82,12 @@
                         </div>
                         <div class="field has-addons has-addons-centered">
                             <p class="control">
-                                <a class="button is-primary is-inverted">
+                                <button id="submit_button" class="button is-primary is-inverted">
                                     <span class="icon">
-                                        <i class="fa fa-sign-in"></i>
+                                        <i class="fa fa-user-plus"></i>
                                     </span>
-                                    <span>Sign in</span>
-                                </a>
+                                    <span>Sign up</span>
+                                </button>
                             </p>
                         </div>
                     </form>
@@ -101,5 +101,6 @@
             </div>
         </section>
         <script type="text/javascript" src="{{ static_url('js/menu_toggle.js') }}"></script>
+        <script type="text/javascript" src="{{ static_url('js/login.js') }}"></script>
     </body>
 </html>
