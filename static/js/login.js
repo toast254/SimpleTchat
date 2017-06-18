@@ -1,17 +1,18 @@
 
 var submitButton = document.getElementById("submit_button");
 
-function onSuccess () {
-    console.log(this);
-    if (this.status == 200)
-        window.location.replace("/room");
-    else
-        onError();
-}
-
 function onError () {
     submitButton.classList.remove("is-loading");
     submitButton.removeAttribute("disabled");
+}
+
+function onSuccess () {
+    if (this.status == 200) {
+        window.location.replace("/room");
+    }
+    else {
+        onError();
+    }
 }
 
 function login(oFormElement) {
