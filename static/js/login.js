@@ -7,7 +7,7 @@ function onError () {
 }
 
 function onSuccess () {
-    if (this.status == 200) {
+    if (this.status === 200) {
         window.location.replace("/room");
     }
     else {
