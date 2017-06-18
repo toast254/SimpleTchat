@@ -9,9 +9,63 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     </head>
     <body>
-        <h2>Hey !</h2>
-        <p>
-            It's still work in progress ...
-        </p>
+        <section class="hero is-primary is-fullheight has-text-centered">
+            <!-- Hero head: stick at the top -->
+            <div class="hero-head">
+                <header class="nav">
+                    <div class="container">
+                        <div class="nav-left">
+                            <a class="nav-item is-active">
+                                <span class="icon">
+                                    <i class="fa fa-commenting"></i>
+                                </span>
+                                <span>SimpleTchat</span>
+                            </a>
+                        </div>
+                        <span id="menu_toggle" class="nav-toggle">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </span>
+                        <div id="menu_content" class="nav-right nav-menu">
+                            <span class="nav-item">
+                                <a class="button is-primary is-inverted" href="/logout">
+                                    <span class="icon">
+                                        <i class="fa fa-sign-in"></i>
+                                    </span>
+                                    <span>Sign out</span>
+                                </a>
+                            </span>
+                            <span class="nav-item">
+                                <a class="button is-primary is-inverted" href="https://github.com/toast254/SimpleTchat">
+                                    <span class="icon">
+                                        <i class="fa fa-github"></i>
+                                    </span>
+                                    <span>Fork</span>
+                                </a>
+                            </span>
+                        </div>
+                    </div>
+                </header>
+            </div>
+            <!-- Hero content: will be in the middle -->
+            <div class="hero-body">
+                <div class="container has-text-centered">
+                    <h1 class="title is-spaced">
+                        Sorry
+                    </h1>
+                    <h2 class="subtitle">
+                        Still work in progress ...
+                    </h2>
+                </div>
+            </div>
+            <!-- Hero footer: will stick at the bottom -->
+            <div class="hero-foot has-text-centered">
+                <div class="container">
+                    <!-- nothing yet -->
+                </div>
+            </div>
+        </section>
+        <script type="text/javascript" src="{{ static_url('js/menu_toggle.js') }}"></script>
     </body>
 </html>
