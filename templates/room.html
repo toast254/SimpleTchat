@@ -9,7 +9,7 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     </head>
     <body>
-        <section class="hero is-primary is-fullheight">
+        <section class="hero is-primary" style="position: fixed !important; top: 0; left: 0; right: 0; z-index: 255;">
             <!-- Hero head: stick at the top -->
             <div class="hero-head">
                 <header class="nav">
@@ -28,6 +28,9 @@
                             <span></span>
                         </span>
                         <div id="menu_content" class="nav-right nav-menu">
+                            <span class="nav-item" id="channel_selector">
+                                <!-- channel selection input -->
+                            </span>
                             <span class="nav-item">
                                 <a class="button is-primary is-inverted" href="/logout">
                                     <span class="icon">
@@ -48,32 +51,19 @@
                     </div>
                 </header>
             </div>
+        </section>
+        <section class="section is-small" style="padding-top: 70px; padding-bottom: 70px;">
             <!-- Hero content: will be in the middle -->
-            <div class="hero-body">
-                <div class="container">
-                    <h1 class="title is-spaced has-text-centered">
-                        Sorry
-                    </h1>
-                    <h2 class="subtitle has-text-centered">
-                        Still work in progress ...
-                    </h2>
-                    <div class="content">
-                        <p class="notification is-info is-pulled-left">
-                            Name @ 12PM : blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla
-                        </p>
-                        <p class="notification is-info is-pulled-right">
-                            blablabla
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <!-- Hero footer: will stick at the bottom -->
-            <div class="hero-foot has-text-centered">
-                <div class="container">
-                    <!-- nothing yet -->
+            <div class="container" id="inbox">
+                <div class="has-text-centered">
+                    <button class="button is-primary is-loading" disabled></button>
                 </div>
             </div>
         </section>
+        <script src="https://unpkg.com/react@latest/dist/react.min.js"></script>
+        <script src="https://unpkg.com/react-dom@latest/dist/react-dom.min.js"></script>
+        <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
         <script type="text/javascript" src="{{ static_url('js/menu_toggle.js') }}"></script>
+        <script type="text/babel" src="{{ static_url('js/room.js') }}"></script>
     </body>
 </html>
