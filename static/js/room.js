@@ -1,13 +1,26 @@
 
 class InputText extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.key_enter = this.key_enter.bind(this);
+    }
+
+    key_enter (event) {
+         if(event.charCode == 13){
+            this.props.send_message();
+         }
+    }
+
     render() {
+        const input_message = this.props.input_message;
         return (
         <div className="field is-grouped">
             <p className="control is-expanded">
-                <input className="input" type="text" id="message_text" placeholder="Your message" />
+                <input className="input" type="text" id="message_text" placeholder="Your message" onKeyPress={this.key_enter} value={input_message} onChange={this.props.change_input_message} />
             </p>
             <p className="control">
-                <button className="button is-info" onClick={this.props.send_message}>
+                <button className="button is-info" onClick={this.props.send_message} disabled={!input_message}>
                     Send
                 </button>
             </p>
@@ -63,7 +76,7 @@ class Inbox extends React.Component {
                 {messages}
                 <div ref={(el) => { this.message_list_end = el; }} />
                 <div className="container notification is-primary" style={sticky_style}>
-                    <InputText send_message={this.props.send_message} />
+                    <InputText send_message={this.props.send_message} input_message={this.props.input_message} change_input_message={this.props.change_input_message} />
                 </div>
             </div>
         )
@@ -72,14 +85,26 @@ class Inbox extends React.Component {
 
 class ChannelSelector extends React.Component {
 
+    constructor(props) {
+        super(props);
+        this.key_enter = this.key_enter.bind(this);
+    }
+
+    key_enter (event){
+         if(event.charCode == 13){
+            this.props.choose_channel();
+         }
+    }
+
     render () {
+        const channel_choice = this.props.channel_choice;
         return (
             <div className="field has-addons">
                 <p className="control">
-                    <input className="input" type="text" placeholder="Channel" id="channel_text" />
+                    <input className="input" type="text" placeholder="Channel" id="channel_text" value={channel_choice} onChange={this.props.change_channel_choice} onKeyPress={this.key_enter} />
                 </p>
                 <p className="control">
-                    <button className="button is-info" onClick={this.props.choose_channel}>
+                    <button className="button is-info" onClick={this.props.choose_channel} disabled={!channel_choice}>
                         Join
                     </button>
                 </p>
@@ -97,10 +122,22 @@ class Room extends React.Component {
             current_user: null,
             ws_socket: null,
             message_list: [],
-            new_message: null
+            new_message: null,
+            input_message: '',
+            channel_choice: '',
         };
         this.choose_channel = this.choose_channel.bind(this);
         this.send_message = this.send_message.bind(this);
+        this.change_input_message = this.change_input_message.bind(this);
+        this.change_channel_choice = this.change_channel_choice.bind(this);
+    }
+
+    change_input_message (event) {
+        this.setState({input_message: event.target.value});
+    }
+
+    change_channel_choice (event) {
+        this.setState({channel_choice: event.target.value});
     }
 
     start_ws (channel) {
@@ -127,15 +164,19 @@ class Room extends React.Component {
             "body" : text,
             "id": new Date()
         };
+        this.setState({input_message: ''});
         this.state.ws_socket.send(JSON.stringify(new_message));
     }
 
     choose_channel () {
-        const current_channel = document.getElementById("channel_text").value;
+        const current_channel = document.getElementById("channel_text").value.trim();
         this.setState({
             current_channel: current_channel
         });
-        this.start_ws(current_channel);
+        if (current_channel && current_channel.length > 0) {
+            this.setState({message_list: []})
+            this.start_ws(current_channel);
+        }
     }
 
     render () {
@@ -171,7 +212,7 @@ class Room extends React.Component {
                                 </span>
                                 <div id="menu_content" className="nav-right nav-menu">
                                     <span className="nav-item">
-                                        <ChannelSelector choose_channel={this.choose_channel} />
+                                        <ChannelSelector choose_channel={this.choose_channel} change_channel_choice={this.change_channel_choice} channel_choice={this.state.channel_choice}/>
                                     </span>
                                     <span className="nav-item">
                                         <a className="button is-primary is-inverted" href="/logout">
@@ -196,7 +237,7 @@ class Room extends React.Component {
                 </section>
                 <section className="section is-small" style={margin_inbox_style}>
                     { this.state.current_channel &&
-                        <Inbox current_channel={this.state.current_channel} send_message={this.send_message} message_list={this.state.message_list} current_user={this.state.current_user} />
+                        <Inbox current_channel={this.state.current_channel} send_message={this.send_message} message_list={this.state.message_list} current_user={this.state.current_user} input_message={this.state.input_message} change_input_message={this.change_input_message} />
                     }
                     { ! this.state.current_channel &&
                         <div className="has-text-centered">
