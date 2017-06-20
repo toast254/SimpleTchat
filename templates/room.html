@@ -9,71 +9,62 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     </head>
     <body>
-        <section class="hero is-primary is-fullheight">
-            <!-- Hero head: stick at the top -->
-            <div class="hero-head">
-                <header class="nav">
-                    <div class="container">
-                        <div class="nav-left">
-                            <a class="nav-item is-active">
-                                <span class="icon">
-                                    <i class="fa fa-commenting"></i>
+        {% module xsrf_form_html() %}
+        <div id="room_content">
+            <section class="hero is-primary" style="position: fixed !important; top: 0; left: 0; right: 0; z-index: 255;">
+                <!-- Hero head: stick at the top -->
+                <div class="hero-head">
+                    <header class="nav">
+                        <div class="container">
+                            <div class="nav-left">
+                                <a class="nav-item is-active">
+                                    <span class="icon">
+                                        <i class="fa fa-commenting"></i>
+                                    </span>
+                                    <span>SimpleTchat</span>
+                                </a>
+                            </div>
+                            <span id="menu_toggle" class="nav-toggle">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </span>
+                            <div id="menu_content" class="nav-right nav-menu">
+                                <span class="nav-item">
+                                    <a class="button is-primary is-inverted" href="/logout">
+                                        <span class="icon">
+                                            <i class="fa fa-sign-in"></i>
+                                        </span>
+                                        <span>Sign out</span>
+                                    </a>
                                 </span>
-                                <span>SimpleTchat</span>
-                            </a>
+                                <span class="nav-item">
+                                    <a class="button is-primary is-inverted" href="https://github.com/toast254/SimpleTchat">
+                                        <span class="icon">
+                                            <i class="fa fa-github"></i>
+                                        </span>
+                                        <span>Fork</span>
+                                    </a>
+                                </span>
+                            </div>
                         </div>
-                        <span id="menu_toggle" class="nav-toggle">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </span>
-                        <div id="menu_content" class="nav-right nav-menu">
-                            <span class="nav-item">
-                                <a class="button is-primary is-inverted" href="/logout">
-                                    <span class="icon">
-                                        <i class="fa fa-sign-in"></i>
-                                    </span>
-                                    <span>Sign out</span>
-                                </a>
-                            </span>
-                            <span class="nav-item">
-                                <a class="button is-primary is-inverted" href="https://github.com/toast254/SimpleTchat">
-                                    <span class="icon">
-                                        <i class="fa fa-github"></i>
-                                    </span>
-                                    <span>Fork</span>
-                                </a>
-                            </span>
-                        </div>
-                    </div>
-                </header>
-            </div>
-            <!-- Hero content: will be in the middle -->
-            <div class="hero-body">
-                <div class="container">
-                    <h1 class="title is-spaced has-text-centered">
-                        Sorry
-                    </h1>
-                    <h2 class="subtitle has-text-centered">
-                        Still work in progress ...
-                    </h2>
-                    <div class="content">
-                        <p class="notification is-info is-pulled-left">
-                            Name @ 12PM : blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla blablabla
-                        </p>
-                        <p class="notification is-info is-pulled-right">
-                            blablabla
-                        </p>
+                    </header>
+                </div>
+            </section>
+            <section class="section is-small" style="padding-top: 70px; padding-bottom: 70px;">
+                {% module xsrf_form_html() %}
+                <!-- Hero content: will be in the middle -->
+                <div class="container" id="inbox">
+                    <div class="has-text-centered">
+                        <button class="button is-primary is-loading" disabled></button>
                     </div>
                 </div>
-            </div>
-            <!-- Hero footer: will stick at the bottom -->
-            <div class="hero-foot has-text-centered">
-                <div class="container">
-                    <!-- nothing yet -->
-                </div>
-            </div>
-        </section>
+            </section>
+        </div>
+        <script src="https://unpkg.com/react@latest/dist/react.min.js"></script>
+        <script src="https://unpkg.com/react-dom@latest/dist/react-dom.min.js"></script>
+        <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
         <script type="text/javascript" src="{{ static_url('js/menu_toggle.js') }}"></script>
+        <script type="text/babel" src="{{ static_url('js/room.js') }}"></script>
     </body>
 </html>
