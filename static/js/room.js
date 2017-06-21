@@ -130,6 +130,15 @@ class Room extends React.Component {
         this.send_message = this.send_message.bind(this);
         this.change_input_message = this.change_input_message.bind(this);
         this.change_channel_choice = this.change_channel_choice.bind(this);
+        this.activate_menu = this.activate_menu.bind(this);
+    }
+
+    activate_menu () {
+        this.setState(function(prevState) {
+            return {
+                menu_activation:  ! prevState.menu_activation
+            };
+        });
     }
 
     change_input_message (event) {
@@ -205,12 +214,12 @@ class Room extends React.Component {
                                         <span>SimpleTchat</span>
                                     </a>
                                 </div>
-                                <span id="menu_toggle" className="nav-toggle">
+                                <span id="menu_toggle" onClick={this.activate_menu} className="nav-toggle">
                                     <span></span>
                                     <span></span>
                                     <span></span>
                                 </span>
-                                <div id="menu_content" className="nav-right nav-menu">
+                                <div id="menu_content" className={"nav-right nav-menu " + (this.state.menu_activation ? 'is-active' : '')}>
                                     <span className="nav-item">
                                         <ChannelSelector choose_channel={this.choose_channel} change_channel_choice={this.change_channel_choice} channel_choice={this.state.channel_choice}/>
                                     </span>
@@ -242,7 +251,7 @@ class Room extends React.Component {
                     { ! this.state.current_channel &&
                         <div className="has-text-centered">
                             <p className="notification is-primary">
-                                Choose a channel
+                                Choose a channel in the menu up here <span> <i className="fa fa-level-up"></i> </span>
                             </p>
                         </div>
                     }
